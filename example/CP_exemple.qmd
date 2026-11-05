@@ -118,4 +118,29 @@ Pour chaque question, cochez **la ou les** réponse(s) correcte(s) (1 pt par que
    Précision $= \dfrac{VP}{VP + FP} = \dfrac{40}{40 + 10} = 0.80$ (le rappel vaut $\dfrac{40}{60} \approx 0.67$).
    :::
 
+## Exercice 4 (3 pts)
+
+Une banque utilise l'arbre de décision suivant pour accepter ou refuser une demande de crédit.
+
+<!-- Diagramme draw.io éditable (VS Code : extension « Draw.io Integration ») -->
+![](arbre-decision.drawio.svg){width=75% fig-align="center"}
+
+1. Quelle décision l'arbre prend-il pour un client ayant un revenu de 65 k et 10 k de dettes ?
+
+   ::: {.sol reponse="1.2cm"}
+   $\Rightarrow$ **Accepté** (revenu > 50 k : oui, puis dettes > 20 k : non)
+   :::
+
+2. Quelle décision l'arbre prend-il pour un client ayant un revenu de 40 k et aucune dette ?
+
+   ::: {.sol reponse="1.2cm"}
+   $\Rightarrow$ **Refusé** (revenu > 50 k : non ; les dettes ne sont pas examinées)
+   :::
+
+3. Quelle est la profondeur de cet arbre ? Citez un critère permettant de choisir l'attribut testé à la racine.
+
+   ::: {.sol reponse="2cm"}
+   $\Rightarrow$ Profondeur **2**. Critère : **gain d'information** (entropie) ou **indice de Gini** ; on choisit l'attribut qui sépare le mieux les classes.
+   :::
+
 

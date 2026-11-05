@@ -3,8 +3,11 @@
 Ce format Quarto produit, à partir d'un seul fichier `.qmd`, l'**énoncé** d'un examen HE-Arc (avec des boîtes de réponse) et son **corrigé** (avec les solutions), tous deux en PDF.
 
 <p align="center">
-  <img src="images/apercu-enonce.png" alt="Première page de l'énoncé d'exemple : en-tête avec logo HE-Arc, titre et sous-titre, informations de l'examen, cadre NOM / Prénom et boîtes de réponse" width="500">
+  <img src="images/apercu-enonce.png" alt="Première page de l'énoncé d'exemple : en-tête avec logo HE-Arc, titre et sous-titre, informations de l'examen, cadre NOM / Prénom et boîtes de réponse" width="400">
+  &nbsp;
+  <img src="images/apercu-qcm-corrige.png" alt="Première page du corrigé du QCM d'exemple : bonnes réponses cochées en rouge, réponses en grille sur deux colonnes et justification encadrée" width="400">
 </p>
+<p align="center"><em>À gauche : énoncé (<code>example/CP_exemple.qmd</code>). À droite : corrigé d'un QCM (<code>example/QCM_exemple.qmd</code>).</em></p>
 
 ## Installation
 
@@ -104,6 +107,23 @@ Ici, le total vaut 10. Si `exam.points` est renseigné et diffère de cette somm
 
 La question et ses réponses ne sont jamais séparées par un saut de page. Voir `example/QCM_exemple.qmd` pour un examen QCM complet.
 
+### Diagrammes draw.io (et SVG)
+
+Un diagramme draw.io enregistré au format `.drawio.svg` s'inclut directement, sans export manuel :
+
+```markdown
+![](arbre-decision.drawio.svg){width=75% fig-align="center"}
+```
+
+- Le fichier reste éditable dans draw.io : dans VS Code, avec l'extension *Draw.io Integration* (`hediet.vscode-drawio`), ou sur app.diagrams.net.
+- À chaque rendu, le SVG est converti en PDF avec le Typst fourni par Quarto, sans outil à installer (ni Inkscape, ni rsvg-convert). Le PDF généré (`arbre-decision.drawio.pdf`) est écrit à côté du SVG et ignoré par git.
+- Les libellés doivent être en **texte simple**. Dans draw.io, décochez *Formatted Text* (style `html=0`) : les libellés HTML ne sont pas rendus hors d'un navigateur.
+- Une image seule dans son paragraphe reste sur la même page que le texte qui la précède.
+
+Voir l'exercice 4 de `example/CP_exemple.qmd`.
+
+### TikZ
+
 Les styles TikZ `aut`, `op` et `couture` (bibliothèques `automata`, `positioning`, `arrows.meta`) sont chargés automatiquement.
 
 ## Fichiers de l'extension
@@ -114,5 +134,6 @@ _extensions/theme-hearc-exams/
 ├── hearc-exam.tex        en-tête/pied, boîtes, couleurs, TikZ
 ├── solution.lua          énoncé/corrigé, variables exam.*, bloc d'informations
 ├── couleurs.lua          [texte]{.couleur}
+├── svg.lua               SVG / .drawio.svg -> PDF via Typst
 └── logo-he-arc-ing.jpg
 ```

@@ -85,6 +85,14 @@
   \par\vspace{2pt}}
 \newcommand{\qcmcellule}[2]{\hangindent=1.6em\hangafter=1\noindent\makebox[1.6em][l]{#1}#2}
 
+% Image collée au texte qui la précède (insérées par svg.lua) :
+% \nopagebreak ne suffit pas, car l'environnement center (fig-align) autorise
+% une coupure via \@beginparpenalty ; on l'interdit le temps de l'image.
+\makeatletter
+\newcommand{\imagedebut}{\nopagebreak[4]\@beginparpenalty\@M}
+\newcommand{\imagefin}{\@beginparpenalty-\@lowpenalty}
+\makeatother
+
 % Saut de page uniquement dans l'énoncé
 \newcommand{\sautpage}{\ifsolution\else\newpage\fi}
 
