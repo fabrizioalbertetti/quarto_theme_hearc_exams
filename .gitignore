@@ -226,5 +226,6 @@ __marimo__/
 /.quarto/
 *.tex
 !_extensions/**/*.tex
+!example/_extensions/**/*.tex
 
 /.luarc.json

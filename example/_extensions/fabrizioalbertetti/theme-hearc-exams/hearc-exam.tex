@@ -1,0 +1,107 @@
+% ---------------------------------------------------------------------------
+% Style des examens HE-Arc
+% Les macros \cptitre, \cpsoustitre, \cpcourt, \cpclasse, \cpannee, \cppiedcentre, \cppieddroite,
+% \cplogo et le booléen \ifsolution sont définis par solution.lua à partir
+% des métadonnées (en-tête YAML du .qmd ou _quarto.yml).
+% ---------------------------------------------------------------------------
+
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{lastpage}
+\usepackage[most]{tcolorbox}
+
+% Couleurs (utilisables avec [texte]{.rouge} via couleurs.lua)
+\definecolor{rouge}{HTML}{C8102E}
+\definecolor{bleu}{HTML}{1F5FA8}
+\definecolor{vert}{HTML}{2E7D32}
+\definecolor{orange}{HTML}{E07000}
+\definecolor{gris}{HTML}{6B6B6B}
+
+% En-tête et pied de page
+\usepackage[headsepline,footsepline]{scrlayer-scrpage}
+\clearpairofpagestyles
+\ihead{\includegraphics[height=1.5cm]{\cplogo}}
+\ohead{\textbf{\cpcourt}%
+  \ifx\cpsoustitre\empty\else\\[2pt]\cpsoustitre\fi
+  \\[2pt]\cpclasse\ifx\cpannee\empty\else{} -- \cpannee\fi}
+\ifoot{\thepage{} / \pageref*{LastPage}}
+\cfoot{\cppiedcentre}
+\ofoot{\cppieddroite}
+\pagestyle{scrheadings}
+\renewcommand{\titlepagestyle}{scrheadings}
+\setkomafont{pageheadfoot}{\normalfont\small}
+
+% Titres
+\setkomafont{disposition}{\normalfont\bfseries\sffamily}
+\setkomafont{subsection}{\large\color{rouge}}
+\setkomafont{section}{\Large\color{rouge}}
+
+% Titre du document
+\makeatletter
+\renewcommand{\maketitle}{%
+  \begin{center}
+    {\usekomafont{disposition}\LARGE \@title\par}
+    \ifx\cpsoustitre\empty\else
+      \smallskip{\usekomafont{disposition}\Large \cpsoustitre\par}
+    \fi
+    \ifsolution
+      \medskip{\usekomafont{disposition}\large\color{rouge}Corrigé\par}
+    \fi
+  \end{center}\bigskip}
+\makeatother
+
+% Boîte de réponse (énoncé) : \reponse{hauteur}
+% (\nobreak : la boîte reste sur la même page que sa question)
+\newcommand{\reponse}[1]{\par\nobreak\smallskip\noindent\fbox{\parbox[t][#1][t]{\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax}{\strut}}\par\medskip}
+
+% Boîte de solution (corrigé)
+\newtcolorbox{solbox}{breakable, enhanced, colback=rouge!4, frame hidden,
+  borderline west={2pt}{0pt}{rouge}, arc=0pt, outer arc=0pt,
+  left=6pt, right=6pt, top=4pt, bottom=4pt, before skip=4pt, after skip=8pt}
+
+% Cadre pour le nom (énoncé uniquement)
+\newtcolorbox{exambox}{colback=white, colframe=black, boxrule=0.6pt, arc=0pt,
+  outer arc=0pt, left=6pt, right=6pt, top=8pt, bottom=8pt}
+
+% QCM (généré par solution.lua à partir de ::: {.qcm})
+\usepackage{array}
+\newcommand{\qcmvide}{\tikz[baseline=0ex]\draw[thick] (0,0) rectangle (1.7ex,1.7ex);}
+\newcommand{\qcmcoche}{\tikz[baseline=0ex]{%
+  \draw[thick] (0,0) rectangle (1.7ex,1.7ex);
+  \draw[rouge, line width=1.4pt] (0.3ex,0.3ex) -- (1.4ex,1.4ex) (0.3ex,1.4ex) -- (1.4ex,0.3ex);}}
+% Pas de saut de page entre la question et ses réponses, ni entre les réponses
+\makeatletter
+\newenvironment{qcm}
+  {\@beginparpenalty\@M\interlinepenalty\@M
+   \begin{list}{}{\setlength{\leftmargin}{2.2em}\setlength{\labelwidth}{1.6em}%
+     \setlength{\labelsep}{0.6em}\setlength{\itemsep}{3pt}\setlength{\parsep}{0pt}%
+     \setlength{\topsep}{2pt}\setlength{\partopsep}{0pt}%
+     \@itempenalty\@M}}
+  {\end{list}}
+\makeatother
+% Grille (colonnes="n") : \qcmgrille{n}{cellules & ... \\}
+\newcommand{\qcmgrille}[2]{\par\nopagebreak\vspace{2pt}\noindent\hspace*{2.2em}%
+  \begin{tabular}{@{}*{#1}{p{\dimexpr(\linewidth-2.2em)/#1-2\tabcolsep\relax}}@{}}#2\end{tabular}%
+  \par\vspace{2pt}}
+\newcommand{\qcmcellule}[2]{\hangindent=1.6em\hangafter=1\noindent\makebox[1.6em][l]{#1}#2}
+
+% Image collée au texte qui la précède (insérées par svg.lua) :
+% \nopagebreak ne suffit pas, car l'environnement center (fig-align) autorise
+% une coupure via \@beginparpenalty ; on l'interdit le temps de l'image.
+\makeatletter
+\newcommand{\imagedebut}{\nopagebreak[4]\@beginparpenalty\@M}
+\newcommand{\imagefin}{\@beginparpenalty-\@lowpenalty}
+\makeatother
+
+% Saut de page uniquement dans l'énoncé
+\newcommand{\sautpage}{\ifsolution\else\newpage\fi}
+
+% TikZ (automates, arbres d'opérations, ...)
+\usepackage{tikz}
+\usetikzlibrary{automata,positioning,arrows.meta}
+\tikzset{
+  >={Stealth[length=2.5mm]},
+  aut/.style={shorten >=1pt, node distance=3cm, on grid, auto, every state/.style={minimum size=1cm}},
+  op/.style={circle, draw, thick, minimum size=0.8cm, inner sep=1pt},
+  couture/.style={->, draw=rouge, thick}
+}
