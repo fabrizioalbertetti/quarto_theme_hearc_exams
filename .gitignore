@@ -224,7 +224,6 @@ __marimo__/
 
 # Quarto
 /.quarto/
-*.pdf
 *.tex
 !_extensions/**/*.tex
 

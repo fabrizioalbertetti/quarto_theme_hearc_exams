@@ -1,0 +1,132 @@
+---
+# ---------------------------------------------------------------------------
+# Variables principales de l'examen
+# ---------------------------------------------------------------------------
+title: "Intelligence Artificielle"
+subtitle: "Test intermédiaire — QCM"
+
+exam:
+  classe: ISC3
+  annee: 2026-2027
+  short: IA
+  date: 13.11.2026        # pied de page à droite
+  type: QCM               # pied de page du corrigé : "Corrigé QCM"
+  materiel: aucun
+  duree: 30 minutes
+  # points: auto         # par défaut : somme des "(N pts)" des titres
+  nom: true               # cadre NOM / Prénom dans l'énoncé
+
+# Deux PDF en un seul rendu : quarto render QCM_exemple.qmd
+# Un seul des deux : --to theme-hearc-exams-pdf (énoncé)
+#                    --to theme-hearc-exams-pdf+solution (corrigé)
+format:
+  theme-hearc-exams-pdf:
+    output-file: QCM_exemple.pdf
+  theme-hearc-exams-pdf+solution:
+    output-file: QCM_exemple_solution.pdf
+    metadata:
+      solution: true
+---
+
+**Consignes :** pour chaque question, cochez **la ou les** réponse(s) correcte(s).
+Chaque question vaut 1 point. Une question est comptée juste uniquement si
+toutes les bonnes cases, et seulement elles, sont cochées.
+
+## Partie A — Apprentissage automatique (5 pts)
+
+1. Lequel de ces algorithmes relève de l'apprentissage **non supervisé** ?
+
+   ::: {.qcm}
+   - [ ] Régression logistique
+   - [x] *k-means*
+   - [ ] Arbre de décision
+   - [ ] *k* plus proches voisins
+   :::
+
+2. Un modèle obtient 99 % d'exactitude sur le jeu d'entraînement et 62 % sur le jeu de test. Il s'agit probablement :
+
+   ::: {.qcm}
+   - [ ] de sous-apprentissage (*underfitting*)
+   - [x] de sur-apprentissage (*overfitting*)
+   - [ ] d'un modèle bien généralisé
+   :::
+
+3. Quelles techniques permettent de **réduire** le sur-apprentissage ? *(plusieurs réponses possibles)*
+
+   ::: {.qcm colonnes="2"}
+   - [x] Régularisation L2
+   - [x] *Dropout*
+   - [ ] Augmenter le nombre d'époques
+   - [x] Augmenter la taille du jeu de données
+   :::
+
+4. Pour un problème de classification binaire très déséquilibré (1 % de positifs), quelle métrique est la **moins** pertinente ?
+
+   ::: {.qcm colonnes="2"}
+   - [x] Exactitude (*accuracy*)
+   - [ ] Rappel
+   - [ ] Score F1
+   - [ ] Aire sous la courbe PR
+   :::
+
+   ::: {.sol reponse="0"}
+   Un modèle qui prédit toujours « négatif » atteint déjà 99 % d'exactitude.
+   :::
+
+5. La validation croisée à *k* plis sert principalement à :
+
+   ::: {.qcm}
+   - [ ] accélérer l'entraînement du modèle
+   - [x] estimer de manière plus fiable la performance en généralisation
+   - [ ] augmenter la taille du jeu d'entraînement
+   :::
+
+\sautpage
+
+## Partie B — Réseaux de neurones (5 pts)
+
+6. Quelle fonction d'activation vaut $\max(0, x)$ ?
+
+   ::: {.qcm colonnes="4"}
+   - [ ] Sigmoïde
+   - [ ] tanh
+   - [x] ReLU
+   - [ ] Softmax
+   :::
+
+7. Quelle fonction de perte est habituellement utilisée avec une sortie *softmax* en classification multi-classe ?
+
+   ::: {.qcm}
+   - [ ] Erreur quadratique moyenne (MSE)
+   - [x] Entropie croisée (*cross-entropy*)
+   - [ ] Perte *hinge*
+   :::
+
+8. Un neurone reçoit $x = (1, 2)$, avec les poids $w = (0.5, -1)$ et le biais $b = 1$. Quelle est sa sortie avec une activation ReLU ?
+
+   ::: {.qcm colonnes="4"}
+   - [x] $0$
+   - [ ] $0.5$
+   - [ ] $1$
+   - [ ] $-0.5$
+   :::
+
+   ::: {.sol reponse="0"}
+   $z = 0.5 \cdot 1 - 1 \cdot 2 + 1 = -0.5$, donc $\text{ReLU}(z) = \max(0, -0.5) = 0$.
+   :::
+
+9. Quelles affirmations sur la rétropropagation (*backpropagation*) sont correctes ? *(plusieurs réponses possibles)*
+
+   ::: {.qcm}
+   - [x] Elle calcule les gradients de la perte par rapport aux poids grâce à la règle de dérivation en chaîne.
+   - [ ] Elle remplace l'algorithme de descente de gradient.
+   - [x] Elle parcourt le réseau de la sortie vers l'entrée.
+   :::
+
+10. Quel type de couche est le plus adapté pour extraire des motifs locaux dans une image ?
+
+    ::: {.qcm}
+    - [ ] Couche dense (entièrement connectée)
+    - [x] Couche de convolution
+    - [ ] Couche récurrente (LSTM)
+    :::

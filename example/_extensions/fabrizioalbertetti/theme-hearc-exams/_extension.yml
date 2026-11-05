@@ -1,0 +1,27 @@
+title: Thème HE-Arc Ingénierie pour examens (PDF, donnée et solution intégrée)
+author: Fabrizio Albertetti
+version: 1.4.0
+quarto-required: ">=1.4.0"
+contributes:
+  formats:
+    pdf:
+      lang: fr
+      documentclass: scrartcl
+      papersize: a4
+      number-sections: false
+      colorlinks: true
+      date-format: DD.MM.YYYY
+      geometry:
+        - top=3.6cm
+        - bottom=2.5cm
+        - left=1.9cm
+        - right=1.9cm
+        - headheight=2.2cm
+        - headsep=0.6cm
+      filters:
+        - solution.lua
+        - couleurs.lua
+      include-in-header:
+        - hearc-exam.tex
+      metadata:
+        solution: false

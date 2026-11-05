@@ -2,16 +2,18 @@
 # ---------------------------------------------------------------------------
 # Variables principales de l'examen
 # ---------------------------------------------------------------------------
-title: "Contrôle Principal"
+title: "Intelligence Artificielle"
+subtitle: "Contrôle Principal"
 
 exam:
   classe: ISC3
   annee: 2026-2027
+  short: IA
   date: 08.01.2027        # pied de page à droite
   type: CP                # pied de page du corrigé : "Corrigé CP"
   materiel: aucun
   duree: 90 minutes
-  points: 38
+  # points: auto         # par défaut : somme des "(N pts)" des titres
   nom: true               # cadre NOM / Prénom dans l'énoncé
   # logo: mon-logo.png    # par défaut : logo HE-Arc fourni par l'extension
 
@@ -80,5 +82,40 @@ def evaluer(X, y):
     return knn.score(X_te, y_te)
 ```
 :::
+
+## Exercice 3 — QCM (3 pts)
+
+Pour chaque question, cochez **la ou les** réponse(s) correcte(s) (1 pt par question).
+
+1. Quel est le rôle du jeu de **validation** ?
+
+   ::: {.qcm}
+   - [ ] Entraîner les poids du modèle
+   - [x] Choisir les hyperparamètres du modèle
+   - [ ] Mesurer la performance finale publiée
+   :::
+
+1. Quelles méthodes sont des méthodes d'**ensemble** ? *(plusieurs réponses possibles)*
+
+   ::: {.qcm colonnes="2"}
+   - [x] *Random forest*
+   - [ ] *k-means*
+   - [x] *Gradient boosting*
+   - [ ] ACP (PCA)
+   :::
+
+
+1. Un classifieur obtient 40 vrais positifs, 10 faux positifs et 20 faux négatifs. Sa **précision** vaut :
+
+   ::: {.qcm colonnes="4"}
+   - [ ] $0.67$
+   - [x] $0.80$
+   - [ ] $0.50$
+   - [ ] $0.60$
+   :::
+
+   ::: {.sol reponse="0"}
+   Précision $= \dfrac{VP}{VP + FP} = \dfrac{40}{40 + 10} = 0.80$ (le rappel vaut $\dfrac{40}{60} \approx 0.67$).
+   :::
 
 
