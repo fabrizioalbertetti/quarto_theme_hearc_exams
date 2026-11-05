@@ -218,3 +218,14 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+/.quarto/
+**/*.quarto_ipynb
+
+# Quarto
+/.quarto/
+*.pdf
+*.tex
+!_extensions/**/*.tex
+
+/.luarc.json

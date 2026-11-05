@@ -1,0 +1,84 @@
+---
+# ---------------------------------------------------------------------------
+# Variables principales de l'examen
+# ---------------------------------------------------------------------------
+title: "Contrôle Principal"
+
+exam:
+  classe: ISC3
+  annee: 2026-2027
+  date: 08.01.2027        # pied de page à droite
+  type: CP                # pied de page du corrigé : "Corrigé CP"
+  materiel: aucun
+  duree: 90 minutes
+  points: 38
+  nom: true               # cadre NOM / Prénom dans l'énoncé
+  # logo: mon-logo.png    # par défaut : logo HE-Arc fourni par l'extension
+
+# Deux PDF en un seul rendu : quarto render CP_exemple.qmd
+# Un seul des deux : --to theme-hearc-exams-pdf (énoncé)
+#                    --to theme-hearc-exams-pdf+solution (corrigé)
+format:
+  theme-hearc-exams-pdf:
+    output-file: CP_exemple.pdf
+  theme-hearc-exams-pdf+solution:
+    output-file: CP_exemple_solution.pdf
+    metadata:
+      solution: true
+---
+
+## Exercice 1 (4 pts)
+
+A quel type d'apprentissage correspond chacune des situations suivantes ?
+
+1. Prédire le prix d'un appartement à partir de sa surface et de sa localisation, en disposant d'un historique de ventes
+
+   ::: {.sol reponse="1.2cm"}
+   $\Rightarrow$ **Apprentissage supervisé** (régression : la cible est une valeur continue connue pour chaque exemple)
+   :::
+
+2. Regrouper les clients d'une boutique en ligne selon leurs habitudes d'achat, sans catégories prédéfinies
+
+   ::: {.sol reponse="1.2cm"}
+   $\Rightarrow$ **Apprentissage non supervisé** (clustering, p. ex. *k-means*)
+   :::
+
+3. Entraîner un agent à jouer aux échecs en lui donnant une récompense lorsqu'il gagne une partie
+
+   ::: {.sol reponse="1.2cm"}
+   $\Rightarrow$ **Apprentissage par renforcement** (l'agent cherche à maximiser la récompense cumulée)
+   :::
+
+4. Classer des e-mails en *spam* / *non-spam* à partir d'un corpus d'e-mails déjà étiquetés
+
+   ::: {.sol reponse="1.2cm"}
+   $\Rightarrow$ **Apprentissage supervisé** (classification binaire)
+   :::
+
+\sautpage
+
+## Exercice 2 (4 pts)
+
+Écrivez en Python (avec `scikit-learn`) une fonction `evaluer(X, y)` qui :
+
+1. sépare les données en un jeu d'entraînement (80 %) et un jeu de test (20 %),
+2. normalise les attributs (moyenne nulle, écart-type unitaire) en s'ajustant **uniquement** sur le jeu d'entraînement,
+3. entraîne un classifieur des *k* plus proches voisins avec $k = 5$,
+4. et retourne l'exactitude (*accuracy*) obtenue sur le jeu de test.
+
+::: {.sol reponse="5cm"}
+```python
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.neighbors import KNeighborsClassifier
+
+def evaluer(X, y):
+    X_tr, X_te, y_tr, y_te = train_test_split(X, y, test_size=0.2)
+    scaler = StandardScaler().fit(X_tr)   # fit sur l'entraînement seulement
+    X_tr, X_te = scaler.transform(X_tr), scaler.transform(X_te)
+    knn = KNeighborsClassifier(n_neighbors=5).fit(X_tr, y_tr)
+    return knn.score(X_te, y_te)
+```
+:::
+
+

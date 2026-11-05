@@ -1,0 +1,72 @@
+% ---------------------------------------------------------------------------
+% Style des examens HE-Arc
+% Les macros \cptitre, \cpclasse, \cpannee, \cppiedcentre, \cppieddroite,
+% \cplogo et le booléen \ifsolution sont définis par solution.lua à partir
+% des métadonnées (en-tête YAML du .qmd ou _quarto.yml).
+% ---------------------------------------------------------------------------
+
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{lastpage}
+\usepackage[most]{tcolorbox}
+
+% Couleurs (utilisables avec [texte]{.rouge} via couleurs.lua)
+\definecolor{rouge}{HTML}{C8102E}
+\definecolor{bleu}{HTML}{1F5FA8}
+\definecolor{vert}{HTML}{2E7D32}
+\definecolor{orange}{HTML}{E07000}
+\definecolor{gris}{HTML}{6B6B6B}
+
+% En-tête et pied de page
+\usepackage[headsepline,footsepline]{scrlayer-scrpage}
+\clearpairofpagestyles
+\ihead{\includegraphics[height=1.5cm]{\cplogo}}
+\ohead{\textbf{\cptitre}\\[2pt]\cpclasse\ifx\cpannee\empty\else{} -- \cpannee\fi}
+\ifoot{\thepage{} / \pageref*{LastPage}}
+\cfoot{\cppiedcentre}
+\ofoot{\cppieddroite}
+\pagestyle{scrheadings}
+\renewcommand{\titlepagestyle}{scrheadings}
+\setkomafont{pageheadfoot}{\normalfont\small}
+
+% Titres
+\setkomafont{disposition}{\normalfont\bfseries\sffamily}
+\setkomafont{subsection}{\large\color{rouge}}
+\setkomafont{section}{\Large\color{rouge}}
+
+% Titre du document
+\makeatletter
+\renewcommand{\maketitle}{%
+  \begin{center}
+    {\usekomafont{disposition}\LARGE \@title\par}
+    \ifsolution
+      \medskip{\usekomafont{disposition}\large\color{rouge}Corrigé\par}
+    \fi
+  \end{center}\bigskip}
+\makeatother
+
+% Boîte de réponse (énoncé) : \reponse{hauteur}
+% (\nobreak : la boîte reste sur la même page que sa question)
+\newcommand{\reponse}[1]{\par\nobreak\smallskip\noindent\fbox{\parbox[t][#1][t]{\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax}{\strut}}\par\medskip}
+
+% Boîte de solution (corrigé)
+\newtcolorbox{solbox}{breakable, enhanced, colback=rouge!4, frame hidden,
+  borderline west={2pt}{0pt}{rouge}, arc=0pt, outer arc=0pt,
+  left=6pt, right=6pt, top=4pt, bottom=4pt, before skip=4pt, after skip=8pt}
+
+% Cadre pour le nom (énoncé uniquement)
+\newtcolorbox{exambox}{colback=white, colframe=black, boxrule=0.6pt, arc=0pt,
+  outer arc=0pt, left=6pt, right=6pt, top=8pt, bottom=8pt}
+
+% Saut de page uniquement dans l'énoncé
+\newcommand{\sautpage}{\ifsolution\else\newpage\fi}
+
+% TikZ (automates, arbres d'opérations, ...)
+\usepackage{tikz}
+\usetikzlibrary{automata,positioning,arrows.meta}
+\tikzset{
+  >={Stealth[length=2.5mm]},
+  aut/.style={shorten >=1pt, node distance=3cm, on grid, auto, every state/.style={minimum size=1cm}},
+  op/.style={circle, draw, thick, minimum size=0.8cm, inner sep=1pt},
+  couture/.style={->, draw=rouge, thick}
+}
