@@ -5,9 +5,9 @@ Ce format Quarto produit, à partir d'un seul fichier `.qmd`, l'**énoncé** d'u
 <p align="center">
   <img src="images/apercu-enonce.png" alt="Première page de l'énoncé d'exemple : en-tête avec logo HE-Arc, titre et sous-titre, informations de l'examen, cadre NOM / Prénom et boîtes de réponse" width="400">
   &nbsp;
-  <img src="images/apercu-qcm-corrige.png" alt="Première page du corrigé du QCM d'exemple : bonnes réponses cochées en rouge, réponses en grille sur deux colonnes et justification encadrée" width="400">
+  <img src="images/apercu-qcm-corrige.png" alt="Première page du corrigé du QCM d'exemple : bonnes réponses cochées en rouge, questions sur deux colonnes, réponses en grille et justification encadrée" width="400">
 </p>
-<p align="center"><em>À gauche : énoncé (<code>example/CP_exemple.qmd</code>). À droite : corrigé d'un QCM (<code>example/QCM_exemple.qmd</code>).</em></p>
+<p align="center"><em>À gauche : énoncé (<code>example/CP_exemple.qmd</code>). À droite : corrigé d’un QCM sur deux colonnes (<code>example/QCM_exemple.qmd</code>).</em></p>
 
 ## Installation
 
@@ -87,6 +87,7 @@ Ici, le total vaut 10. Si `exam.points` est renseigné et diffère de cette somm
 | `::: {.sol reponse="0"}` … `:::` | rien | idem (p. ex. justification d'un QCM) |
 | `::: {.qcm}` + liste `- [ ]` / `- [x]` | cases vides | bonnes réponses cochées en rouge |
 | `::: {.qcm colonnes="2"}` | réponses en grille sur 2 colonnes | idem |
+| `::: {.colonnes n="2"}` … `:::` | contenu (p. ex. questions) sur n colonnes (2 par défaut) | idem |
 | `::: {.exam}` … `:::` | contenu encadré | masqué |
 | `\sautpage` | saut de page | rien |
 | `[texte]{.rouge}` (`.bleu`, `.vert`, `.orange`, `.gris`) | texte en couleur | texte en couleur |
@@ -109,6 +110,30 @@ Ici, le total vaut 10. Si `exam.points` est renseigné et diffère de cette somm
 ```
 
 La question et ses réponses ne sont jamais séparées par un saut de page. Voir `example/QCM_exemple.qmd` pour un examen QCM complet.
+
+#### QCM sur deux colonnes
+
+Pour gagner de la place, entourez les questions d'un bloc `.colonnes` :
+
+```markdown
+## Partie A (5 pts)
+
+::: {.colonnes n="2"}
+1. Première question …
+
+   ::: {.qcm}
+   - [ ] …
+   :::
+
+2. Deuxième question …
+:::
+```
+
+- `n` donne le nombre de colonnes (2 par défaut).
+- Une question n'est jamais coupée entre deux colonnes : son texte, ses réponses et sa justification restent ensemble.
+- Un titre placé juste avant le bloc reste sur la même page que les colonnes. Les colonnes commencent sur une nouvelle page s'il reste moins de 10 lignes.
+- Dans une colonne étroite, préférez une liste simple (`{.qcm}`) ou `colonnes="2"` à `colonnes="4"` pour les réponses.
+- `\sautpage` ne doit pas se trouver dans un bloc `.colonnes`. Fermez le bloc avant (voir les parties A et B de `example/QCM_exemple.qmd`).
 
 ### Diagrammes draw.io (et SVG)
 

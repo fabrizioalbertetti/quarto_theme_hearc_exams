@@ -34,6 +34,8 @@ toutes les bonnes cases, et seulement elles, sont cochées.
 
 ## Partie A — Apprentissage automatique (5 pts)
 
+::: {.colonnes n="2"}
+
 1. Lequel de ces algorithmes relève de l'apprentissage **non supervisé** ?
 
    ::: {.qcm}
@@ -53,7 +55,7 @@ toutes les bonnes cases, et seulement elles, sont cochées.
 
 3. Quelles techniques permettent de **réduire** le sur-apprentissage ? *(plusieurs réponses possibles)*
 
-   ::: {.qcm colonnes="2"}
+   ::: {.qcm}
    - [x] Régularisation L2
    - [x] *Dropout*
    - [ ] Augmenter le nombre d'époques
@@ -81,13 +83,17 @@ toutes les bonnes cases, et seulement elles, sont cochées.
    - [ ] augmenter la taille du jeu d'entraînement
    :::
 
+:::
+
 \sautpage
 
 ## Partie B — Réseaux de neurones (5 pts)
 
+::: {.colonnes n="2"}
+
 6. Quelle fonction d'activation vaut $\max(0, x)$ ?
 
-   ::: {.qcm colonnes="4"}
+   ::: {.qcm colonnes="2"}
    - [ ] Sigmoïde
    - [ ] tanh
    - [x] ReLU
@@ -130,3 +136,5 @@ toutes les bonnes cases, et seulement elles, sont cochées.
     - [x] Couche de convolution
     - [ ] Couche récurrente (LSTM)
     :::
+
+:::

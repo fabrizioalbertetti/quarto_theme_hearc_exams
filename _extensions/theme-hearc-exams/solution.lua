@@ -25,6 +25,8 @@
     ::: {.exam}                contenu affiché uniquement dans l'énoncé, encadré
     ::: {.qcm colonnes="2"}    QCM : liste "- [ ] fausse" / "- [x] correcte"
                                (cases vides dans l'énoncé, cochées dans le corrigé)
+    ::: {.colonnes n="2"}      contenu (p. ex. questions de QCM) sur n colonnes
+                               (2 par défaut) ; une question n'est jamais coupée
 ]]
 
 local solution = false
@@ -148,7 +150,8 @@ end
 local function Div(el)
   if el.classes:includes("sol") then
     if solution then
-      local blocks = pandoc.Blocks({ pandoc.RawBlock("latex", "\\begin{solbox}") })
+      -- \nopagebreak : la solution reste collée à sa question
+      local blocks = pandoc.Blocks({ pandoc.RawBlock("latex", "\\nopagebreak\\begin{solbox}") })
       blocks:extend(el.content)
       blocks:insert(pandoc.RawBlock("latex", "\\end{solbox}"))
       return blocks
@@ -160,6 +163,16 @@ local function Div(el)
 
   if el.classes:includes("qcm") then
     return qcm(el)
+  end
+
+  if el.classes:includes("colonnes") then
+    local n = tonumber(el.attributes["n"] or "2") or 2
+    local titre = el.attributes["titre-latex"] or ""
+    local blocks = pandoc.Blocks({ pandoc.RawBlock("latex",
+      "\\begin{colonnes}[{" .. titre .. "}]{" .. n .. "}") })
+    blocks:extend(el.content)
+    blocks:insert(pandoc.RawBlock("latex", "\\end{colonnes}"))
+    return blocks
   end
 
   if el.classes:includes("exam") then
@@ -194,10 +207,28 @@ local function format_points(x)
   return (string.format("%g", x):gsub("%.", ","))
 end
 
+-- Calculé avant que les titres placés devant ::: {.colonnes} soient déplacés
+local total = 0
+local function calcul_points(doc)
+  total = somme_points(doc.blocks)
+end
+
+-- Un titre suivi directement de ::: {.colonnes} passe dans le préambule de
+-- multicols, pour ne pas rester seul en bas de page.
+local function titres_colonnes(blocks)
+  for i = #blocks - 1, 1, -1 do
+    local h, d = blocks[i], blocks[i + 1]
+    if h.t == "Header" and d.t == "Div" and d.classes:includes("colonnes") then
+      d.attributes["titre-latex"] = (pandoc.write(pandoc.Pandoc({ h }), "latex"):gsub("%s+$", ""))
+      blocks:remove(i)
+    end
+  end
+  return blocks
+end
+
 -- Bloc d'informations en début de document
 local function Pandoc(doc)
   -- exam.points absent ou "auto" : somme des points des exercices
-  local total = somme_points(doc.blocks)
   local points = exam.points and pandoc.utils.stringify(exam.points) or "auto"
   if points == "auto" then
     points = total > 0 and format_points(total) or nil
@@ -249,6 +280,8 @@ end
 
 return {
   { Meta = Meta },
+  { Pandoc = calcul_points },
+  { Blocks = titres_colonnes },
   { Div = Div },
   { Pandoc = Pandoc },
 }

@@ -55,7 +55,9 @@
 \newcommand{\reponse}[1]{\par\nobreak\smallskip\noindent\fbox{\parbox[t][#1][t]{\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax}{\strut}}\par\medskip}
 
 % Boîte de solution (corrigé)
-\newtcolorbox{solbox}{breakable, enhanced, colback=rouge!4, frame hidden,
+% (sécable sur plusieurs pages, sauf dans un bloc ::: {.colonnes})
+\tcbset{solcoupure/.style={breakable}}
+\newtcolorbox{solbox}{solcoupure, enhanced, colback=rouge!4, frame hidden,
   borderline west={2pt}{0pt}{rouge}, arc=0pt, outer arc=0pt,
   left=6pt, right=6pt, top=4pt, bottom=4pt, before skip=4pt, after skip=8pt}
 
@@ -72,7 +74,7 @@
 % Pas de saut de page entre la question et ses réponses, ni entre les réponses
 \makeatletter
 \newenvironment{qcm}
-  {\@beginparpenalty\@M\interlinepenalty\@M
+  {\@beginparpenalty\@M\@endparpenalty\@M\interlinepenalty\@M
    \begin{list}{}{\setlength{\leftmargin}{2.2em}\setlength{\labelwidth}{1.6em}%
      \setlength{\labelsep}{0.6em}\setlength{\itemsep}{3pt}\setlength{\parsep}{0pt}%
      \setlength{\topsep}{2pt}\setlength{\partopsep}{0pt}%
@@ -82,8 +84,25 @@
 % Grille (colonnes="n") : \qcmgrille{n}{cellules & ... \\}
 \newcommand{\qcmgrille}[2]{\par\nopagebreak\vspace{2pt}\noindent\hspace*{2.2em}%
   \begin{tabular}{@{}*{#1}{p{\dimexpr(\linewidth-2.2em)/#1-2\tabcolsep\relax}}@{}}#2\end{tabular}%
-  \par\vspace{2pt}}
-\newcommand{\qcmcellule}[2]{\hangindent=1.6em\hangafter=1\noindent\makebox[1.6em][l]{#1}#2}
+  \par\nopagebreak\vspace{2pt}}
+\newcommand{\qcmcellule}[2]{\raggedright\arraybackslash\hangindent=1.6em\hangafter=1\noindent\makebox[1.6em][l]{#1}#2}
+
+% Mise en page sur plusieurs colonnes (::: {.colonnes n="2"})
+\usepackage{multicol}
+\setlength{\columnsep}{1.2em}
+\setlength{\columnseprule}{0.4pt}
+\renewcommand{\columnseprulecolor}{\color{gris!50}}
+% Texte aligné à gauche (colonnes étroites) ; une question (paragraphe,
+% réponses et solution) n'est jamais coupée entre deux colonnes.
+% \begin{colonnes}[titre]{n} : le titre (préambule) reste avec les colonnes,
+% qui commencent sur une nouvelle page s'il reste moins de 10 lignes.
+\makeatletter
+\newenvironment{colonnes}[2][]
+  {\setlength{\premulticols}{10\baselineskip}%
+   \begin{multicols}{#2}[#1]\raggedcolumns\raggedright\interlinepenalty\@M
+   \tcbset{solcoupure/.style={}}}
+  {\end{multicols}}
+\makeatother
 
 % Image collée au texte qui la précède (insérées par svg.lua) :
 % \nopagebreak ne suffit pas, car l'environnement center (fig-align) autorise
