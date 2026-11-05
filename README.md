@@ -2,6 +2,10 @@
 
 Ce format Quarto produit, à partir d'un seul fichier `.qmd`, l'**énoncé** d'un examen HE-Arc (avec des boîtes de réponse) et son **corrigé** (avec les solutions), tous deux en PDF.
 
+<p align="center">
+  <img src="images/apercu-enonce.png" alt="Première page de l'énoncé d'exemple : en-tête avec logo HE-Arc, titre et sous-titre, informations de l'examen, cadre NOM / Prénom et boîtes de réponse" width="500">
+</p>
+
 ## Installation
 
 Dans un nouveau dossier, pour récupérer le gabarit complet (extension, `_quarto.yml` et `CP_exemple.qmd`) :
