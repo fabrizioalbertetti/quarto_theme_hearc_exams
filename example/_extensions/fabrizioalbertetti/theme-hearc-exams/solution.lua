@@ -13,6 +13,7 @@
       type          ex. CP -> pied de page central "Corrigé CP" dans le corrigé
       materiel      matériel autorisé
       duree         durée de l'examen
+      instructions  consignes (liste YAML ou texte), affichées en liste à puces
       points        total de points ; absent ou "auto" -> somme des "(N pts)"
                     des titres d'exercices (avertissement si valeur différente)
       nom           true/false : cadre NOM / Prénom dans l'énoncé (défaut true)
@@ -215,13 +216,32 @@ local function Pandoc(doc)
   ligne("Durée", exam.duree)
   ligne("Total de points", points)
 
-  local md = table.concat(lignes, " \\\n")
-  if not solution and (exam.nom == nil or is_true(exam.nom)) then
-    md = md .. "\n\n::: {.exam}\n**NOM :** \\hspace{6cm} **Prénom :**\n:::\n"
+  local intro = pandoc.Blocks({})
+  if #lignes > 0 then
+    intro:extend(pandoc.read(table.concat(lignes, " \\\n"), "markdown").blocks)
   end
-  if md == "" then return nil end
 
-  local intro = pandoc.read(md, "markdown").blocks:walk({ Div = Div })
+  -- Consignes : liste YAML (ou texte simple) affichée en liste à puces
+  local instr = exam.instructions
+  if instr ~= nil then
+    if pandoc.utils.type(instr) ~= "List" then instr = { instr } end
+    local items = {}
+    for _, i in ipairs(instr) do
+      local inl = pandoc.utils.type(i) == "Inlines" and i or pandoc.Inlines(pandoc.utils.stringify(i))
+      if #inl > 0 then table.insert(items, { pandoc.Plain(inl) }) end
+    end
+    if #items > 0 then
+      intro:insert(pandoc.Para({ pandoc.Strong("Consignes :") }))
+      intro:insert(pandoc.BulletList(items))
+    end
+  end
+
+  if not solution and (exam.nom == nil or is_true(exam.nom)) then
+    intro:extend(pandoc.read("::: {.exam}\n**NOM :** \\hspace{6cm} **Prénom :**\n:::\n",
+      "markdown").blocks:walk({ Div = Div }))
+  end
+  if #intro == 0 then return nil end
+
   intro:extend(doc.blocks)
   doc.blocks = intro
   return doc

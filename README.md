@@ -46,6 +46,9 @@ exam:
   type: CP                # pied de page du corrigé : "Corrigé CP"
   materiel: aucun
   duree: 90 minutes
+  instructions:           # consignes, affichées en liste sous « Consignes : »
+    - Merci de rendre la donnée à la fin du CP.
+    - Utiliser un stylo de couleur **bleue** ou noire.
   # points: auto         # par défaut : somme des "(N pts)" des titres
   nom: true               # cadre NOM / Prénom dans l'énoncé
   # logo: mon-logo.png    # par défaut : logo HE-Arc fourni par l'extension
@@ -62,7 +65,7 @@ format:
 
 Les variables communes à plusieurs examens (par exemple `exam.classe` ou `exam.annee`) peuvent être déplacées dans `_quarto.yml`. Les valeurs du `.qmd` ont la priorité.
 
-Le bloc « Matériel autorisé / Durée / Total de points » et le cadre NOM / Prénom sont générés automatiquement en début de document à partir de ces variables. Une variable absente fait disparaître sa ligne.
+Le bloc « Matériel autorisé / Durée / Total de points », la liste des consignes (`exam.instructions`) et le cadre NOM / Prénom sont générés automatiquement en début de document à partir de ces variables. Une variable absente fait disparaître sa ligne. `exam.instructions` accepte une liste (une puce par consigne) ou un texte simple (une seule puce) ; le Markdown y est interprété (`**gras**`, `*italique*`).
 
 ### Total de points automatique
 

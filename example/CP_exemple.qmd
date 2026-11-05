@@ -13,6 +13,12 @@ exam:
   type: CP                # pied de page du corrigé : "Corrigé CP"
   materiel: aucun
   duree: 90 minutes
+  instructions:           # consignes affichées en liste sur la page de titre
+    - Merci de rendre la donnée à la fin du CP.
+    - Utiliser un stylo de couleur **bleue** ou noire (pas de crayon à papier).
+    - Répondre directement dans les cadres prévus ; utiliser le verso si nécessaire.
+    - Justifier toutes les réponses, sauf pour les QCM.
+    - Les téléphones portables doivent être éteints et rangés.
   # points: auto         # par défaut : somme des "(N pts)" des titres
   nom: true               # cadre NOM / Prénom dans l'énoncé
   # logo: mon-logo.png    # par défaut : logo HE-Arc fourni par l'extension
