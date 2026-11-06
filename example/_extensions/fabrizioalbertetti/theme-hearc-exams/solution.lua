@@ -15,7 +15,8 @@
       duree         durée de l'examen
       instructions  consignes (liste YAML ou texte), affichées en liste à puces
       points        total de points ; absent ou "auto" -> somme des "(N pts)"
-                    des titres d'exercices (avertissement si valeur différente)
+                    des titres et des questions numérotées ("1. (2 pts) …")
+                    (avertissement si valeur différente ou si rien n'est trouvé)
       nom           true/false : cadre NOM / Prénom dans l'énoncé (défaut true)
       logo          chemin vers un logo (défaut : logo HE-Arc de l'extension)
 
@@ -184,18 +185,48 @@ local function Div(el)
   end
 end
 
--- Somme des points indiqués dans les titres : "## Exercice 1 (4 pts)".
--- Un titre n'est compté que si aucun titre parent n'est déjà compté
--- (ex. "### a) (1 pt)" sous "## Exercice 1 (4 pts)" n'est pas additionné).
-local function somme_points(blocks)
+-- Points "(N pts)" / "(N pt)" / "(N points)" dans un texte, ou nil
+local function lire_points(inlines)
+  local s = pandoc.utils.stringify(inlines)
+  local n = s:match("%(%s*([%d%.,]+)%s*pts?%.?%s*%)")
+    or s:match("%(%s*([%d%.,]+)%s*points?%s*%)")
+  return n and tonumber((n:gsub(",", ".")))
+end
+
+-- Somme des points indiqués :
+--   - dans les titres : "## Exercice 1 (4 pts)" ;
+--   - dans le premier paragraphe des questions numérotées : "1. (2 pts) Question…",
+--     y compris dans ::: {.colonnes} et ::: {.qcm}.
+-- Un élément n'est compté que si aucun parent (titre ou question) n'est déjà
+-- compté (ex. "### a) (1 pt)" sous "## Exercice 1 (4 pts)" n'est pas additionné).
+-- Le contenu des solutions (::: {.sol}) est ignoré.
+local function somme_points(blocks, parent_compte)
   local total, niveau_compte = 0, nil
   for _, b in ipairs(blocks) do
     if b.t == "Header" then
       if niveau_compte and b.level <= niveau_compte then niveau_compte = nil end
-      local n = pandoc.utils.stringify(b.content):match("%(%s*([%d%.,]+)%s*pts?%.?%s*%)")
-      if n and niveau_compte == nil then
-        total = total + (tonumber((n:gsub(",", "."))) or 0)
+      local n = lire_points(b.content)
+      if n and not parent_compte and niveau_compte == nil then
+        total = total + n
         niveau_compte = b.level
+      end
+    else
+      local compte = parent_compte or niveau_compte ~= nil
+      if b.t == "OrderedList" or b.t == "BulletList" then
+        for _, item in ipairs(b.content) do
+          local first = item[1]
+          local n = b.t == "OrderedList" and first
+            and (first.t == "Para" or first.t == "Plain") and lire_points(first.content)
+          if n and not compte then
+            total = total + n
+          else
+            total = total + somme_points(item, compte)
+          end
+        end
+      elseif b.t == "Div" and not b.classes:includes("sol") then
+        total = total + somme_points(b.content, compte)
+      elseif b.t == "BlockQuote" then
+        total = total + somme_points(b.content, compte)
       end
     end
   end
@@ -231,7 +262,14 @@ local function Pandoc(doc)
   -- exam.points absent ou "auto" : somme des points des exercices
   local points = exam.points and pandoc.utils.stringify(exam.points) or "auto"
   if points == "auto" then
-    points = total > 0 and format_points(total) or nil
+    if total > 0 then
+      points = format_points(total)
+    else
+      points = nil
+      quarto.log.warning("exam.points : aucun \"(N pts)\" trouvé dans les titres ni dans "
+        .. "les questions numérotées ; le total de points n'est pas affiché. "
+        .. "Indiquer les points (ex. \"1. (2 pts) Question…\") ou fixer exam.points.")
+    end
   elseif total > 0 and tonumber((points:gsub(",", "."))) ~= total then
     quarto.log.warning("exam.points = " .. points .. " mais la somme des exercices vaut "
       .. format_points(total))

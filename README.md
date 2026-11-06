@@ -49,7 +49,7 @@ exam:
   instructions:           # consignes, affichées en liste sous « Consignes : »
     - Merci de rendre la donnée à la fin du CP.
     - Utiliser un stylo de couleur **bleue** ou noire.
-  # points: auto         # par défaut : somme des "(N pts)" des titres
+  # points: auto         # par défaut : somme des "(N pts)" des titres et questions
   nom: true               # cadre NOM / Prénom dans l'énoncé
   # logo: mon-logo.png    # par défaut : logo HE-Arc fourni par l'extension
 
@@ -77,7 +77,19 @@ Si `exam.points` est absent (ou vaut `auto`), le total est la somme des points i
 ## Exercice 2 (6 pts)
 ```
 
-Ici, le total vaut 10. Si `exam.points` est renseigné et diffère de cette somme, `quarto render` affiche un avertissement.
+Ici, le total vaut 10.
+
+Pour un examen sans titres (simple liste de questions), les points peuvent être placés au début de chaque question numérotée, y compris dans `::: {.colonnes}` et `::: {.qcm}` :
+
+```markdown
+1. (2 pts) Quel est le résultat de…
+2. (1,5 pt) Expliquer…
+   a. (1 pt)          <- non additionné : sa question parente compte déjà
+```
+
+Ici, le total vaut 3,5. Le contenu des solutions (`::: {.sol}`) est ignoré.
+
+`quarto render` affiche un avertissement si `exam.points` est renseigné et diffère de cette somme, ou si `auto` ne trouve aucun point (la ligne « Total de points » n'est alors pas affichée).
 
 ## Syntaxe dans le `.qmd`
 
