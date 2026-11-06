@@ -124,3 +124,17 @@
   op/.style={circle, draw, thick, minimum size=0.8cm, inner sep=1pt},
   couture/.style={->, draw=rouge, thick}
 }
+
+% Blocs de code : le fond gris de Quarto (snugshade, package framed) calcule
+% mal la place restante dans multicols (::: {.colonnes}) et peut laisser une
+% page blanche. Remplacé par une tcolorbox insécable.
+% (Shaded n'est défini par Quarto que si le document contient du code.)
+\AtBeginDocument{%
+\let\Shaded\relax\let\endShaded\relax
+\newenvironment{Shaded}
+  {\begin{tcolorbox}[colback=shadecolor, frame hidden, boxrule=0pt, arc=0pt,
+     outer arc=0pt, left=3pt, right=3pt, top=2pt, bottom=2pt,
+     before={\par\nopagebreak[4]\vspace{1pt}\noindent},
+     after={\par\nopagebreak[4]}]}
+  {\end{tcolorbox}}%
+}
