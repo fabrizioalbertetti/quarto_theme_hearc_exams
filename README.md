@@ -158,6 +158,7 @@ Un diagramme draw.io enregistré au format `.drawio.svg` s'inclut directement, s
 - Le fichier reste éditable dans draw.io : dans VS Code, avec l'extension *Draw.io Integration* (`hediet.vscode-drawio`), ou sur app.diagrams.net.
 - À chaque rendu, le SVG est converti en PDF avec le Typst fourni par Quarto, sans outil à installer (ni Inkscape, ni rsvg-convert). Le PDF généré (`arbre-decision.drawio.pdf`) est écrit à côté du SVG et ignoré par git.
 - Les libellés doivent être en **texte simple**. Dans draw.io, décochez *Formatted Text* (style `html=0`) : les libellés HTML ne sont pas rendus hors d'un navigateur.
+- Les couleurs « mode sombre » ajoutées par draw.io (`style="stroke: light-dark(…)"`), que Typst ne comprend pas, sont retirées avant conversion : sinon traits et flèches disparaissent. La police Helvetica reçoit des polices de repli sans empattements (Arial…).
 - Une image seule dans son paragraphe reste sur la même page que le texte qui la précède.
 
 Voir l'exercice 4 de `example/CP_exemple.qmd`.

@@ -22,6 +22,20 @@ local function typst_exe()
   return "typst"
 end
 
+-- Adapte le SVG exporté par draw.io au moteur SVG de Typst (usvg) :
+--  * draw.io ajoute style="stroke: light-dark(...)" / "fill: light-dark(...)"
+--    pour le mode sombre ; usvg ne connaît pas light-dark(), et comme le style
+--    CSS l'emporte sur l'attribut, traits et remplissages disparaissent.
+--    Les attributs stroke=/fill= contiennent déjà la couleur claire : on
+--    supprime simplement ces styles.
+--  * Helvetica n'existe pas sous Windows : on ajoute des polices de repli
+--    sans empattements (sinon Typst retombe sur une police à empattements).
+local function nettoyer_svg(svg)
+  svg = svg:gsub('%s*style="[^"]*light%-dark%([^"]*"', "")
+  svg = svg:gsub('font%-family="Helvetica"', 'font-family="Helvetica, Arial, Liberation Sans, sans-serif"')
+  return svg
+end
+
 local function svg_vers_pdf(src)
   local docdir = pandoc.path.directory(quarto.doc.input_file)
   local abs = pandoc.path.is_absolute(src) and src or pandoc.path.join({ docdir, src })
@@ -29,10 +43,25 @@ local function svg_vers_pdf(src)
   local dir, nom = pandoc.path.directory(abs), pandoc.path.filename(abs)
   local pdf_abs = abs:gsub("%.[sS][vV][gG]$", ".pdf")
 
+  -- Copie nettoyée temporaire, dans le même dossier (références relatives).
+  local f = io.open(abs, "rb")
+  if not f then
+    quarto.log.warning("SVG introuvable : " .. src)
+    return nil
+  end
+  local contenu = f:read("a")
+  f:close()
+  local tmp_nom = "." .. nom .. ".tmp.svg"
+  local tmp_abs = pandoc.path.join({ dir, tmp_nom })
+  local t = io.open(tmp_abs, "wb")
+  t:write(nettoyer_svg(contenu))
+  t:close()
+
   local typ = "#set page(width: auto, height: auto, margin: 0pt)\n"
-    .. '#image("/' .. nom:gsub('"', '\\"') .. '")\n'
+    .. '#image("/' .. tmp_nom:gsub('"', '\\"') .. '")\n'
   local ok, err = pcall(pandoc.pipe, typst_exe(),
     { "compile", "--root", dir, "-", pdf_abs }, typ)
+  os.remove(tmp_abs)
   if not ok then
     quarto.log.warning("Conversion SVG -> PDF impossible pour " .. src .. " : " .. tostring(err))
     return nil
