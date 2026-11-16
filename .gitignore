@@ -229,3 +229,4 @@ __marimo__/
 !example/_extensions/**/*.tex
 
 /.luarc.json
+.DS_Store
